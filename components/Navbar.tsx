@@ -1,59 +1,86 @@
-"use client"
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import { useTheme } from "next-themes"
-import { motion } from "framer-motion"
-import { Home, PenToolIcon as Tools, Users, LogIn, Sun, Moon, Menu, X } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"
+"use client";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { motion } from "framer-motion";
+import {
+  Home,
+  PenToolIcon as Tools,
+  Users,
+  LogIn,
+  Sun,
+  Moon,
+  Menu,
+  X,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 
 const Navbar = () => {
-  const { theme, setTheme } = useTheme()
-  const pathname = usePathname()
-  const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
     { name: "Home", icon: Home, href: "/" },
     { name: "Tools", icon: Tools, href: "/tools" },
     { name: "About", icon: Users, href: "/about" },
     { name: "Login", icon: LogIn, href: "/login" },
-  ]
+  ];
 
   // Session state
-  const [user, setUser] = useState<{ email: string; fullName?: string } | null>(null)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [user, setUser] = useState<{ email: string; fullName?: string } | null>(
+    null
+  );
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("user")
+    const stored = localStorage.getItem("user");
     if (stored) {
-      setUser(JSON.parse(stored))
+      setUser(JSON.parse(stored));
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false)
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
-    setUser(null)
-    router.push("/")
-  }
+    localStorage.removeItem("user");
+    setUser(null);
+    router.push("/");
+  };
 
-  const filteredNavItems = user ? navItems.filter(item => item.name !== "Login") : navItems
+  const filteredNavItems = user
+    ? navItems.filter((item) => item.name !== "Login")
+    : navItems;
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-white border-opacity-20 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-2xl font-bold text-white">
+          <Link
+            href="/"
+            className="flex items-center text-2xl font-bold text-white"
+          >
+            <img
+              src="https://iili.io/39pGKJ4.png"
+              alt="G-Fit Logo"
+              className="h-12 w-auto mr-2 animate-pulse"
+              style={{
+                filter: "drop-shadow(0 0 15px rgba(255, 255, 255, 0.9))",
+              }}
+            />
             G-Fit
           </Link>
 
@@ -63,7 +90,11 @@ const Navbar = () => {
                 key={item.name}
                 href={item.href}
                 className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors
-                  ${pathname === item.href ? "bg-white text-black" : "text-white hover:bg-white hover:bg-opacity-10"}`}
+                  ${
+                    pathname === item.href
+                      ? "bg-white text-black"
+                      : "text-white hover:bg-white hover:bg-opacity-10"
+                  }`}
               >
                 <item.icon className="w-5 h-5" />
                 {item.name}
@@ -76,7 +107,11 @@ const Navbar = () => {
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="ml-2 p-2 rounded-lg bg-white bg-opacity-10 text-white hover:bg-opacity-20"
             >
-              {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === "dark" ? (
+                <Sun className="w-5 h-5" />
+              ) : (
+                <Moon className="w-5 h-5" />
+              )}
             </motion.button>
 
             {user && (
@@ -109,8 +144,15 @@ const Navbar = () => {
           </div>
 
           <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white">
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-white"
+            >
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -125,7 +167,9 @@ const Navbar = () => {
                 key={item.name}
                 href={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname === item.href ? "bg-white text-black" : "text-white hover:bg-white hover:bg-opacity-10"
+                  pathname === item.href
+                    ? "bg-white text-black"
+                    : "text-white hover:bg-white hover:bg-opacity-10"
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
@@ -137,13 +181,17 @@ const Navbar = () => {
             ))}
             <button
               onClick={() => {
-                setTheme(theme === "dark" ? "light" : "dark")
-                setIsMenuOpen(false)
+                setTheme(theme === "dark" ? "light" : "dark");
+                setIsMenuOpen(false);
               }}
               className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white hover:bg-opacity-10"
             >
               <div className="flex items-center gap-2">
-                {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                {theme === "dark" ? (
+                  <Sun className="w-5 h-5" />
+                ) : (
+                  <Moon className="w-5 h-5" />
+                )}
                 Toggle Theme
               </div>
             </button>
@@ -151,8 +199,8 @@ const Navbar = () => {
               <div className="border-t border-gray-600 pt-2">
                 <button
                   onClick={() => {
-                    handleLogout()
-                    setIsMenuOpen(false)
+                    handleLogout();
+                    setIsMenuOpen(false);
                   }}
                   className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-white hover:bg-opacity-10"
                 >
@@ -164,8 +212,7 @@ const Navbar = () => {
         </div>
       )}
     </nav>
-  )
-}
+  );
+};
 
-export default Navbar
-
+export default Navbar;
